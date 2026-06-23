@@ -1,0 +1,36 @@
+name: Validar sintaxis de filtros
+
+on:
+  push:
+    paths:
+      - 'minifilters.txt'
+  pull_request:
+    paths:
+      - 'minifilters.txt'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Validar minifilters.txt
+        run: |
+          ERROR=0
+          while IFS= read -r line; do
+            # Saltar líneas vacías y comentarios
+            if [ -z "$line" ]; then continue; fi
+            if echo "$line" | grep -q '^!'; then continue; fi
+            # Verificar prefijos válidos
+            if ! echo "$line" | grep -qE '^(\|\||@@|##|#@#)'; then
+              echo "ERROR: Línea inválida -> $line"
+              ERROR=1
+            fi
+          done < minifilters.txt
+          if [ $ERROR -eq 1 ]; then
+            echo "❌ Se encontraron líneas con sintaxis incorrecta."
+            exit 1
+          else
+            echo "✅ Todas las líneas tienen formato válido."
+          fi
