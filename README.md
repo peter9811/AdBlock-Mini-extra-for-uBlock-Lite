@@ -37,7 +37,7 @@ https://raw.githubusercontent.com/peter9811/AdBlock-Mini-extra-for-uBlock-Lite/m
 | Identidad / Data Brokers        | BlueKai, Tapad, ID5, TheTradeDesk                                   |
 | Atribución móvil                | AppsFlyer, Adjust, Branch, Kochava, Singular                        |
 | Monitoreo de errores            | Sentry, Bugsnag, New Relic, DataDog                                 |
-| Minería de criptos              | CoinImp, Webminepool, [Minero.cc](https://Minero.cc)                |
+| Minería de criptos              | CoinImp, Webminepool, Minero.cc                |
 | Popups / Popunders              | PopAds, PopCash, ExoClick, TrafficJunky                             |
 | Fabricantes (telemetría)        | Apple, Huawei, Samsung, Xiaomi, Oppo, Realme, LG                    |
 | Smart TVs / Streaming           | Roku, Vizio, LG TV                                                  |
@@ -50,8 +50,8 @@ https://raw.githubusercontent.com/peter9811/AdBlock-Mini-extra-for-uBlock-Lite/m
 
 La lista incluye excepciones para evitar romper sitios populares:
 
-- `@@||www.facebook.com/ajax/ads/...` – permite anuncios internos de Facebook.
-- `@@||accounts.google.com/adwords/...` – permite AdWords en Google Accounts.
+- `@@||www.facebook.com/ajax/ads/` – permite algunos componentes internos de Facebook necesarios.
+- `@@||accounts.google.com/adwords/` – permite acceso a servicios de Google Ads.
 - `@@||connect.facebook.net^$script` – permite el SDK de Facebook.
 - `@@||platform.twitter.com^$script` – permite widgets de Twitter.
 

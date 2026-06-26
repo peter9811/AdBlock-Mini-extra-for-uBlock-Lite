@@ -18,19 +18,33 @@ jobs:
       - name: Validar minifilters.txt
         run: |
           ERROR=0
-          while IFS= read -r line; do
-            # Saltar líneas vacías y comentarios
-            if [ -z "$line" ]; then continue; fi
-            if echo "$line" | grep -q '^!'; then continue; fi
-            # Verificar prefijos válidos
-            if ! echo "$line" | grep -qE '^(\|\||@@|##|#@#)'; then
-              echo "ERROR: Línea inválida -> $line"
+          LINE_NUM=0
+          while IFS= read -r line || [ -n "$line" ]; do
+            LINE_NUM=$((LINE_NUM + 1))
+            if [[ -z "${line// }" ]]; then continue; fi
+            if [[ "$line" =~ ^! ]]; then continue; fi
+            if [[ "$line" =~ \[.*\]\(.*\) ]]; then
+              echo "ERROR: Línea $LINE_NUM contiene enlaces Markdown -> $line"
+              ERROR=1
+            fi
+            if ! [[ "$line" =~ ^(\|\||@@|##|#@#) ]]; then
+              echo "ERROR: Línea $LINE_NUM tiene prefijo inválido -> $line"
+              ERROR=1
+            fi
+            if [[ "$line" == *"∣"* ]]; then
+              echo "ERROR: Línea $LINE_NUM contiene el carácter inválido '∣' -> $line"
               ERROR=1
             fi
           done < minifilters.txt
+          DUPLICATES=$(grep -v '^!' minifilters.txt | grep -v '^$' | sort | uniq -d)
+          if [[ -n "$DUPLICATES" ]]; then
+            echo "ERROR: Se encontraron reglas duplicadas:"
+            echo "$DUPLICATES"
+            ERROR=1
+          fi
           if [ $ERROR -eq 1 ]; then
-            echo "❌ Se encontraron líneas con sintaxis incorrecta."
-            exit 1
+            echo "❌ Se encontraron errores en la validación."
+            false
           else
-            echo "✅ Todas las líneas tienen formato válido."
+            echo "✅ Validación completada exitosamente."
           fi
